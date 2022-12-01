@@ -34,9 +34,9 @@ if __name__ == "__main__":
         print(f"Starting time: {startTime}")
         print()
         while cur < startTime:
-            cur = datetime.now()
             print(f"\rRemaining time: {(startTime - cur).seconds}s", end='')
             time.sleep(1)
+            cur = datetime.now()
 
     r = requests.get(f"https://adventofcode.com/{args.year}/day/{args.day}/input", cookies={"session": session})
 

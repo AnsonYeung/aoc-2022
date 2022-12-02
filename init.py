@@ -23,7 +23,7 @@ if __name__ == "__main__":
     
     if not args.input_only:
         os.makedirs(day_str)
-        shutil.copyfile(args.template_file, f"{day_str}/solve.py")
+        shutil.copy(args.template_file, f"{day_str}/solve.py")
 
     with open(".env/session", "r") as sessFile:
         session = sessFile.read().strip()

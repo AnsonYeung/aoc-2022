@@ -34,7 +34,7 @@ if __name__ == "__main__":
         print(f"Starting time: {startTime}")
         print()
         while cur < startTime:
-            print(f"\rRemaining time: {(startTime - cur).seconds}s", end='')
+            print(f"\rRemaining time: {(startTime - cur).seconds}s ", end='')
             time.sleep(1)
             cur = datetime.now()
         print()

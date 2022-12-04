@@ -5,6 +5,18 @@ from heapq import *
 from collections import *
 from itertools import *
 from math import *
+import os
+import sys
+import requests
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from init import get_session
+
+def submit(part: int, ans):
+    print(f"Submit answer {ans}")
+    day = int(os.path.basename(os.path.dirname(__file__)))
+    r = requests.post(f"https://adventofcode.com/2022/day/{day}/answer", data={"level": part, "answer": ans}, cookies={"session": get_session()})
+    print(r.text)
 
 data = stdin.read().split('\n')[:-1]
 

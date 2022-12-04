@@ -7,17 +7,22 @@ import logging
 import time
 from datetime import datetime, timedelta
 
-parser = argparse.ArgumentParser(
-        description="Create a file using the template and download right when the problem start",
-        )
-
-parser.add_argument("day", type=int)
-parser.add_argument("-t", "--template-file", default="template/default.py")
-parser.add_argument("-y", "--year", default=2022, type=int)
-parser.add_argument("-i", "--immediate", action="store_true", default=False)
-parser.add_argument("--input-only", action="store_true", default=False)
+def get_session() -> str:
+    with open(os.path.join(os.path.dirname(__file__), ".env/session"), "r") as sessFile:
+        return sessFile.read().strip()
 
 if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(
+            description="Create a file using the template and download right when the problem start",
+            )
+
+    parser.add_argument("day", type=int)
+    parser.add_argument("-t", "--template-file", default="template/default.py")
+    parser.add_argument("-y", "--year", default=2022, type=int)
+    parser.add_argument("-i", "--immediate", action="store_true", default=False)
+    parser.add_argument("--input-only", action="store_true", default=False)
+
     args = parser.parse_args()
     day_str = "%02d" % args.day
     
@@ -25,8 +30,7 @@ if __name__ == "__main__":
         os.makedirs(day_str)
         shutil.copy(args.template_file, f"{day_str}/solve.py")
 
-    with open(".env/session", "r") as sessFile:
-        session = sessFile.read().strip()
+    session = get_session()
 
     if not args.immediate:
         cur = datetime.now()

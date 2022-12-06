@@ -14,7 +14,7 @@ from init import get_session
 
 def submit(part: int, ans):
     print(f"Submit answer {ans}")
-    day = int(os.path.basename(os.path.dirname(__file__)))
+    day = int(os.path.basename(os.path.dirname(os.path.realpath(__file__))))
     r = requests.post(f"https://adventofcode.com/2022/day/{day}/answer", data={"level": part, "answer": ans}, cookies={"session": get_session()})
     print(r.text)
 

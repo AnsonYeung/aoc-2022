@@ -13,7 +13,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from init import get_session
 
 def submit(part: int, ans):
-    print(f"Submit answer {ans}")
+    res = input(f"Submit answer {ans}? [Y/n]")
+    if 'N' in res or 'n' in res: return
     day = int(os.path.basename(os.path.dirname(os.path.realpath(__file__))))
     r = requests.post(f"https://adventofcode.com/2022/day/{day}/answer", data={"level": part, "answer": ans}, cookies={"session": get_session()})
     print(r.text)
@@ -21,10 +22,12 @@ def submit(part: int, ans):
 data = stdin.read().split('\n')[:-1]
 
 def part1():
-    pass
+    ans = 0
+    submit(1, ans)
 
 def part2():
-    pass
+    ans = 0
+    submit(2, ans)
 
 if __name__ == "__main__":
     part1()

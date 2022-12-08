@@ -4,6 +4,7 @@ from copy import *
 from heapq import *
 from collections import *
 from itertools import *
+from functools import *
 from math import *
 import os
 import sys

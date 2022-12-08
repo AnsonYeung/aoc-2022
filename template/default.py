@@ -19,7 +19,8 @@ def submit(part: int, ans):
     r = requests.post(f"https://adventofcode.com/2022/day/{day}/answer", data={"level": part, "answer": ans}, cookies={"session": get_session()})
     print(r.text)
 
-data = stdin.read().split('\n')[:-1]
+with open("input.txt", "r") as f:
+    data = f.read().split('\n')[:-1]
 
 def part1():
     ans = 0

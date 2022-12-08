@@ -4,6 +4,7 @@ from copy import *
 from heapq import *
 from collections import *
 from itertools import *
+from functools import *
 from math import *
 import os
 import sys
@@ -13,13 +14,14 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from init import get_session
 
 def submit(part: int, ans):
-    # res = input(f"Submit answer {ans}? [Y/n]")
-    # if 'N' in res or 'n' in res: return
+    res = input(f"Submit answer {ans}? [Y/n]")
+    if 'N' in res or 'n' in res: return
     day = int(os.path.basename(os.path.dirname(os.path.realpath(__file__))))
     r = requests.post(f"https://adventofcode.com/2022/day/{day}/answer", data={"level": part, "answer": ans}, cookies={"session": get_session()})
     print(r.text)
 
-data = stdin.read().split('\n')[:-1]
+with open("input.txt", "r") as f:
+    data = f.read().split('\n')[:-1]
 
 def part1():
     ans = 0
@@ -68,7 +70,7 @@ def part2():
                 score[3] += 1
                 if data[i][y] >= val:
                     break
-            ans = max(ans, score[0] * score[1] * score[2] * score[3])
+            ans = max(ans, reduce(lambda x, y: x * y, score))
     submit(2, ans)
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ from collections import *
 from itertools import *
 from functools import *
 from math import *
+import numpy as np
 import os
 import sys
 import requests

@@ -19,7 +19,9 @@ def submit(part: int, ans):
     if 'N' in res or 'n' in res: return
     day = int(os.path.basename(os.path.dirname(os.path.realpath(__file__))))
     r = requests.post(f"https://adventofcode.com/2022/day/{day}/answer", data={"level": part, "answer": ans}, cookies={"session": get_session()})
-    print(r.text)
+    res = r.text
+    print(res)
+    print(res.split("\n")[-16])
 
 with open("input.txt", "r") as f:
     data = f.read().split('\n')[:-1]

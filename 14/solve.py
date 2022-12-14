@@ -27,34 +27,38 @@ with open("input.txt", "r") as f:
     data = f.read().split('\n')[:-1]
 
 def part1():
-    filled: set[tuple[int, int]] = set()
+    filled = [[False for _ in range(0, 2000)] for _ in range(600)]
     low_level = 0
     for line in data:
-        points = list(map(lambda x: np.array(list(map(int, x.split(",")))), line.split(" -> ")))
+        points = list(map(lambda x: list(map(int, x.split(","))), line.split(" -> ")))
         low_level = max(low_level, max(map(lambda x: x[1], points)))
         for i in range(len(points) - 1):
-            dir = (points[i + 1] - points[i]) // np.linalg.norm(points[i + 1] - points[i]).astype(int)
+            dir = [np.sign(points[i + 1][0] - points[i][0]), np.sign(points[i + 1][1] - points[i][1])]
             cur = points[i]
-            while np.any(cur != points[i + 1]):
-                filled.add(tuple(cur))
-                cur += dir
-            filled.add(tuple(cur))
+            while cur[0] != points[i + 1][0] or cur[1] != points[i + 1][1]:
+                filled[cur[0]][cur[1]] = True
+                cur[0] += dir[0]
+                cur[1] += dir[1]
+            filled[cur[0]][cur[1]] = True
 
-    assert (500, 0) not in filled
+
+    assert not filled[500][0]
 
     ans = 0
     while True:
-        cur = np.array([500, 0])
+        cur = [500, 0]
         ok = False
         while cur[1] <= low_level:
-            if tuple(cur + np.array([0, 1])) not in filled:
-                cur += np.array([0, 1])
-            elif tuple(cur + np.array([-1, 1])) not in filled:
-                cur += np.array([-1, 1])
-            elif tuple(cur + np.array([1, 1])) not in filled:
-                cur += np.array([1, 1])
+            if not filled[cur[0]][cur[1] + 1]:
+                cur[1] += 1
+            elif not filled[cur[0] - 1][cur[1] + 1]:
+                cur[0] -= 1
+                cur[1] += 1
+            elif not filled[cur[0] + 1][cur[1] + 1]:
+                cur[0] += 1
+                cur[1] += 1
             else:
-                filled.add(tuple(cur))
+                filled[cur[0]][cur[1]] = True
                 ans += 1
                 ok = True
                 break
@@ -64,38 +68,39 @@ def part1():
     submit(1, ans)
 
 def part2():
-    filled: set[tuple[int, int]] = set()
+    filled = [[False for _ in range(0, 2000)] for _ in range(1000)]
     low_level = 0
     for line in data:
-        points = list(map(lambda x: np.array(list(map(int, x.split(",")))), line.split(" -> ")))
+        points = list(map(lambda x: list(map(int, x.split(","))), line.split(" -> ")))
         low_level = max(low_level, max(map(lambda x: x[1], points)))
         for i in range(len(points) - 1):
-            dir = (points[i + 1] - points[i]) // np.linalg.norm(points[i + 1] - points[i]).astype(int)
+            dir = [np.sign(points[i + 1][0] - points[i][0]), np.sign(points[i + 1][1] - points[i][1])]
             cur = points[i]
-            while np.any(cur != points[i + 1]):
-                filled.add(tuple(cur))
-                cur += dir
-            filled.add(tuple(cur))
+            while cur[0] != points[i + 1][0] or cur[1] != points[i + 1][1]:
+                filled[cur[0]][cur[1]] = True
+                cur[0] += dir[0]
+                cur[1] += dir[1]
+            filled[cur[0]][cur[1]] = True
+
+    assert not filled[500][0]
 
     ans = 1
-    pending: list = [np.array([500, 0])]
-    filled.add((500, 0))
+    pending: list = [[500, 0]]
+    filled[500][0] = True
     while len(pending) > 0:
         cur = pending.pop()
-        assert tuple(cur) in filled
-        print(ans, cur)
         if cur[1] >= low_level + 1: continue
-        if tuple(cur + np.array([0, 1])) not in filled:
-            filled.add(tuple(cur + np.array([0, 1])))
-            pending.append(cur + np.array([0, 1]))
+        if not filled[cur[0]][cur[1] + 1]:
+            filled[cur[0]][cur[1] + 1] = True
+            pending.append([cur[0], cur[1] + 1])
             ans += 1
-        if tuple(cur + np.array([-1, 1])) not in filled:
-            filled.add(tuple(cur + np.array([-1, 1])))
-            pending.append(cur + np.array([-1, 1]))
+        if not filled[cur[0] - 1][cur[1] + 1]:
+            filled[cur[0] - 1][cur[1] + 1] = True
+            pending.append([cur[0] - 1, cur[1] + 1])
             ans += 1
-        if tuple(cur + np.array([1, 1])) not in filled:
-            filled.add(tuple(cur + np.array([1, 1])))
-            pending.append(cur + np.array([1, 1]))
+        if not filled[cur[0] + 1][cur[1] + 1]:
+            filled[cur[0] + 1][cur[1] + 1] = True
+            pending.append([cur[0] + 1, cur[1] + 1])
             ans += 1
 
     submit(2, ans)

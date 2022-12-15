@@ -64,6 +64,7 @@ def part2():
     possible.add(0)
     possible.add(4000000)
     good_h = -1
+    result = 0
     while True:
         ranges: list[tuple[int, int, int]] = []
         height = min(possible)
@@ -80,6 +81,7 @@ def part2():
         cur_last = 0
         for r in ranges:
             if r[0] > cur_last:
+                result = cur_last * 4000000 + height
                 cur_last = r[0]
             if r[1] <= cur_last:
                 continue
@@ -97,28 +99,7 @@ def part2():
                 dist = (filtered[i][1] - filtered[j][0]) // 2 + 1
                 if dist > 0:
                     possible.add(height + dist)
-    ranges2: list[tuple[int, int]] = []
-    for line in parsed:
-        dist = abs(line[0] - line[2]) + abs(line[1] - line[3])
-        vdist = abs(line[1] - good_h)
-        if dist >= vdist:
-            delta = dist - vdist
-            ranges2.append((line[0] - delta, line[0] + delta + 1))
-    ranges = list(sorted(ranges))
-    print(ranges)
-    pos = 0
-    cur_last = ranges[0][0]
-    for r in ranges:
-        if r[0] > cur_last:
-            pos = cur_last
-            break
-        if r[1] <= cur_last:
-            continue
-        cur_last = r[1]
-    print(height, pos)
-    print(test_beacon(pos, height))
-    ans = pos * 4000000 + height
-    submit(2, ans)
+    submit(2, result)
 
 if __name__ == "__main__":
     part1()

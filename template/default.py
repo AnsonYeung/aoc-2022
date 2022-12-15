@@ -12,7 +12,7 @@ import sys
 import requests
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from init import get_session
+from init import get_session # type: ignore
 
 def submit(part: int, ans):
     res = input(f"Submit answer {ans}? [Y/n]")

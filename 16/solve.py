@@ -62,48 +62,78 @@ with open("input.txt", "r") as f:
             if i & (1 << id):
                 total += val
         inc.append(total)
+    dist = [[0 if i == j else 1 if i in adj[j] else len(valve_id) for i in range(len(valve_id))] for j in range(len(valve_id))]
+    for i in range(len(valve_id)):
+        for j in range(len(valve_id)):
+            for k in range(len(valve_id)):
+                if dist[j][i] + dist[i][k] < dist[j][k]:
+                    dist[j][k] = dist[j][i] + dist[i][k]
 
 def part1():
-    dp: 'list[list[int]]' = [[-1 for _ in range(2 ** len(sp_valve))] for _ in range(len(valve_id))]
-    dp[valve_id["AA"]][0] = 0
-    for _ in range(30):
-        new_dp: 'list[list[int]]' = [[-1 for _ in range(2 ** len(sp_valve))] for _ in range(len(valve_id))]
-        for id, valve in enumerate(dp):
+    ans = 0
+    dp = [[[-1 for _ in range(2 ** len(sp_valve))] for _ in range(len(sp_valve) + 1)] for _ in range(31)]
+    back_map: 'dict[int, int]' = {}
+    back_map[len(sp_valve)] = valve_id["AA"]
+    for oid in sp_valve_id:
+        back_map[sp_valve_id[oid]] = oid
+    dp[30][len(sp_valve)][0] = 0
+    for timeLeft in range(30, 0, -1):
+        for sid, valve in enumerate(dp[timeLeft]):
             for state, val in enumerate(valve):
                 if val != -1:
-                    if id in sp_valve_id:
-                        new_state = state | (1 << sp_valve_id[id])
-                        new_dp[id][new_state] = max(new_dp[id][new_state], val + inc[state])
-                    for new_id in adj[id]:
-                        new_dp[new_id][state] = max(new_dp[new_id][state], val + inc[state])
-        dp = new_dp
-    ans = max(max(x) for x in dp)
+                    for i in range(15):
+                        if state & (1 << i): continue
+                        d = dist[back_map[sid]][back_map[i]]
+                        new_time = timeLeft - d - 1
+                        if new_time > 0:
+                            dp[new_time][i][state | (1 << i)] = max(dp[new_time][i][state | (1 << i)], val + new_time * sp_valve[i])
+                            if val + new_time * sp_valve[i] > ans:
+                                ans = val + new_time * sp_valve[i]
     submit(1, ans)
 
 def part2():
-    dp = [[[-1 for _ in range(2 ** len(sp_valve))] for _ in range(len(valve_id))] for _ in range(len(valve_id))]
-    dp[valve_id["AA"]][valve_id["AA"]][0] = 0
-    for _ in tqdm(range(26)):
-        new_dp = [[[-1 for _ in range(2 ** len(sp_valve))] for _ in range(len(valve_id))] for _ in range(len(valve_id))]
-        for id, x in enumerate(dp):
-            for ele_id, valve in enumerate(x):
-                for state, val in enumerate(valve):
-                    if val != -1:
-                        if ele_id in sp_valve_id:
-                            s = state | (1 << sp_valve_id[ele_id])
-                            if id in sp_valve_id:
-                                new_state = s | (1 << sp_valve_id[id])
-                                new_dp[id][ele_id][new_state] = max(new_dp[id][ele_id][new_state], val + inc[state])
-                            for new_id in adj[id]:
-                                new_dp[new_id][ele_id][s] = max(new_dp[new_id][ele_id][s], val + inc[state])
-                        for new_ele_id in adj[ele_id]:
-                            if id in sp_valve_id:
-                                new_state = state | (1 << sp_valve_id[id])
-                                new_dp[id][new_ele_id][new_state] = max(new_dp[id][new_ele_id][new_state], val + inc[state])
-                            for new_id in adj[id]:
-                                new_dp[new_id][new_ele_id][state] = max(new_dp[new_id][new_ele_id][state], val + inc[state])
-        dp = new_dp
-    ans = max(max(max(y) for y in x) for x in dp)
+    ans = 0
+    dp = [[[-1 for _ in range(2 ** len(sp_valve))] for _ in range(len(sp_valve) + 1)] for _ in range(27)]
+    back_map: 'dict[int, int]' = {}
+    back_map[len(sp_valve)] = valve_id["AA"]
+    for oid in sp_valve_id:
+        back_map[sp_valve_id[oid]] = oid
+    dp[26][len(sp_valve)][0] = 0
+    final_states: 'dict[int, int]' = {}
+    for timeLeft in range(26, 0, -1):
+        for sid, valve in enumerate(dp[timeLeft]):
+            for state, val in enumerate(valve):
+                if val != -1:
+                    have_child = False
+                    for i in range(15):
+                        if state & (1 << i): continue
+                        d = dist[back_map[sid]][back_map[i]]
+                        new_time = timeLeft - d - 1
+                        if new_time > 0:
+                            have_child = True
+                            dp[new_time][i][state | (1 << i)] = max(dp[new_time][i][state | (1 << i)], val + new_time * sp_valve[i])
+                            if val + new_time * sp_valve[i] > ans:
+                                ans = val + new_time * sp_valve[i]
+                    if not have_child:
+                        if state not in final_states:
+                            final_states[state] = val
+                        if val > final_states[state]:
+                            final_states[state] = val
+    dp = [[[-1 for _ in range(2 ** len(sp_valve))] for _ in range(len(sp_valve) + 1)] for _ in range(27)]
+    for state in final_states:
+        dp[26][len(sp_valve)][state] = final_states[state]
+    for timeLeft in range(26, 0, -1):
+        for sid, valve in enumerate(dp[timeLeft]):
+            for state, val in enumerate(valve):
+                if val != -1:
+                    for i in range(15):
+                        if state & (1 << i): continue
+                        d = dist[back_map[sid]][back_map[i]]
+                        new_time = timeLeft - d - 1
+                        if new_time > 0:
+                            dp[new_time][i][state | (1 << i)] = max(dp[new_time][i][state | (1 << i)], val + new_time * sp_valve[i])
+                            if val + new_time * sp_valve[i] > ans:
+                                ans = val + new_time * sp_valve[i]
     submit(2, ans)
 
 if __name__ == "__main__":

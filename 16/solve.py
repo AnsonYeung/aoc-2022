@@ -62,12 +62,12 @@ with open("input.txt", "r") as f:
             if i & (1 << id):
                 total += val
         inc.append(total)
-    dist = [[0 if i == j else 1 if i in adj[j] else len(valve_id) for i in range(len(valve_id))] for j in range(len(valve_id))]
+    valve_dist = [[0 if i == j else 1 if i in adj[j] else len(valve_id) for i in range(len(valve_id))] for j in range(len(valve_id))]
     for i in range(len(valve_id)):
         for j in range(len(valve_id)):
             for k in range(len(valve_id)):
-                if dist[j][i] + dist[i][k] < dist[j][k]:
-                    dist[j][k] = dist[j][i] + dist[i][k]
+                if valve_dist[j][i] + valve_dist[i][k] < valve_dist[j][k]:
+                    valve_dist[j][k] = valve_dist[j][i] + valve_dist[i][k]
 
 def part1():
     ans = 0
@@ -83,7 +83,7 @@ def part1():
                 if val != -1:
                     for i in range(15):
                         if state & (1 << i): continue
-                        d = dist[back_map[sid]][back_map[i]]
+                        d = valve_dist[back_map[sid]][back_map[i]]
                         new_time = timeLeft - d - 1
                         if new_time > 0:
                             dp[new_time][i][state | (1 << i)] = max(dp[new_time][i][state | (1 << i)], val + new_time * sp_valve[i])
@@ -107,7 +107,7 @@ def part2():
                     have_child = False
                     for i in range(15):
                         if state & (1 << i): continue
-                        d = dist[back_map[sid]][back_map[i]]
+                        d = valve_dist[back_map[sid]][back_map[i]]
                         new_time = timeLeft - d - 1
                         if new_time > 0:
                             have_child = True
@@ -128,7 +128,7 @@ def part2():
                 if val != -1:
                     for i in range(15):
                         if state & (1 << i): continue
-                        d = dist[back_map[sid]][back_map[i]]
+                        d = valve_dist[back_map[sid]][back_map[i]]
                         new_time = timeLeft - d - 1
                         if new_time > 0:
                             dp[new_time][i][state | (1 << i)] = max(dp[new_time][i][state | (1 << i)], val + new_time * sp_valve[i])

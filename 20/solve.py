@@ -52,7 +52,7 @@ def part1():
     submit(1, ans)
 
 def part2():
-    arr = list((i, x * 811589153)for i, x in enumerate(data))
+    arr = list((i, x * 811589153) for i, x in enumerate(data))
     for _ in range(10):
         for i in range(len(data)):
             loc = 0

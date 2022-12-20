@@ -22,8 +22,11 @@ def submit(part: int, ans):
     day = int(os.path.basename(os.path.dirname(os.path.realpath(__file__))))
     r = requests.post(f"https://adventofcode.com/2022/day/{day}/answer", data={"level": part, "answer": ans}, cookies={"session": get_session()})
     res = r.text
-    print(res)
-    print(res.split("\n")[-16])
+    main = re.search(r"(?s)<main>(.*)</main>", res)
+    if main:
+        print(main.group(1))
+    else:
+        print(res)
 
 with open("input.txt", "r") as f:
     data = f.read().split('\n')[:-1]

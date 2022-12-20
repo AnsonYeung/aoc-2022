@@ -6,6 +6,8 @@ from collections import *
 from itertools import *
 from functools import *
 from math import *
+from tqdm import tqdm
+import re
 import numpy as np
 import os
 import sys

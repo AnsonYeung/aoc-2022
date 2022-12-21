@@ -82,7 +82,7 @@ def part2():
     rhs = dfs2(parsed2["root"][2])
     s = Solver()
     s.add(lhs == rhs)
-    assert(s.check())
+    assert s.check()
     print(s.model())
     ans = s.model()[Int("x")]
     submit(2, ans)

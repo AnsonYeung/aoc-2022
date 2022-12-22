@@ -60,34 +60,25 @@ def part1():
             dir = (dir + 1) % 4
         else:
             for _ in range(x):
+                orig = loc_r, loc_c
                 if dir == 0:
-                    orig = loc_c
                     loc_c = (loc_c + 1) % map_w
                     while map[loc_r][loc_c] == " ":
                         loc_c = (loc_c + 1) % map_w
-                    if map[loc_r][loc_c] == "#":
-                        loc_c = orig
                 elif dir == 2:
-                    orig = loc_c
                     loc_c = (loc_c - 1) % map_w
                     while map[loc_r][loc_c] == " ":
                         loc_c = (loc_c - 1) % map_w
-                    if map[loc_r][loc_c] == "#":
-                        loc_c = orig
                 elif dir == 1:
-                    orig = loc_r
                     loc_r = (loc_r + 1) % len(map)
                     while map[loc_r][loc_c] == " ":
                         loc_r = (loc_r + 1) % len(map)
-                    if map[loc_r][loc_c] == "#":
-                        loc_r = orig
                 elif dir == 3:
-                    orig = loc_r
                     loc_r = (loc_r - 1) % len(map)
                     while map[loc_r][loc_c] == " ":
                         loc_r = (loc_r - 1) % len(map)
-                    if map[loc_r][loc_c] == "#":
-                        loc_r = orig
+                if map[loc_r][loc_c] == "#":
+                    loc_r, loc_c = orig
     ans = 4 * (loc_c + 1) + 1000 * (loc_r + 1) + dir
     submit(1, ans)
 
@@ -114,34 +105,19 @@ def part2():
             dir = (dir + 1) % 4
         else:
             for _ in range(x):
+                orig = loc_r, loc_c, dir
                 if dir == 0:
-                    orig = loc_r, loc_c, dir
                     loc_c += 1
-                    if not 0 <= loc_c < map_w or map[loc_r][loc_c] == " ":
-                        loc_r, loc_c, dir = edge_map[orig]
-                    if map[loc_r][loc_c] == "#":
-                        loc_r, loc_c, dir = orig
                 elif dir == 2:
-                    orig = loc_r, loc_c, dir
                     loc_c -= 1
-                    if not 0 <= loc_c < map_w or map[loc_r][loc_c] == " ":
-                        loc_r, loc_c, dir = edge_map[orig]
-                    if map[loc_r][loc_c] == "#":
-                        loc_r, loc_c, dir = orig
                 elif dir == 1:
-                    orig = loc_r, loc_c, dir
                     loc_r += 1
-                    if not 0 <= loc_r < len(map) or map[loc_r][loc_c] == " ":
-                        loc_r, loc_c, dir = edge_map[orig]
-                    if map[loc_r][loc_c] == "#":
-                        loc_r, loc_c, dir = orig
                 elif dir == 3:
-                    orig = loc_r, loc_c, dir
                     loc_r -= 1
-                    if not 0 <= loc_r < len(map) or map[loc_r][loc_c] == " ":
-                        loc_r, loc_c, dir = edge_map[orig]
-                    if map[loc_r][loc_c] == "#":
-                        loc_r, loc_c, dir = orig
+                if not 0 <= loc_c < map_w or not 0 <= loc_r < len(map) or map[loc_r][loc_c] == " ":
+                    loc_r, loc_c, dir = edge_map[orig]
+                if map[loc_r][loc_c] == "#":
+                    loc_r, loc_c, dir = orig
     ans = 4 * (loc_c + 1) + 1000 * (loc_r + 1) + dir
     submit(2, ans)
 
